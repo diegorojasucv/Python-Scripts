@@ -51,22 +51,27 @@ funcion_agrupamiento = {"Age":[len,np.sum,np.mean]}
 tabla_dinamica(df, indices, columnas, valor, funcion_agrupamiento)
 
 #################### Funcion ROW_NUMBER en SQL ####################
-def row_number(df, partitionby, orderby, asc_desc, filtrado, row = 1):
+def row_number(df, filtrado, partitionby, orderby, asc_desc, row = 1):
     ''' Función que replica el ROW_NUMBER de SQL'''
 
     if filtrado=='todos':
         df["row_number"] = df.groupby(partitionby)[orderby].rank(method = "first", ascending = asc_desc)
+        df['row_number'] = df['row_number'].astype(int)
         df = df.sort_values(partitionby)
     elif filtrado=='igual a':
         df["row_number"] = df.groupby(partitionby)[orderby].rank(method = "first", ascending = asc_desc)
+        df['row_number'] = df['row_number'].astype(int)
         df = df.sort_values(partitionby)
         df = df[df["row_number"] == row]
+        df = df.drop(columns = "row_number")
     elif filtrado=='menor a':
         df["row_number"] = df.groupby(partitionby)[orderby].rank(method = "first", ascending = asc_desc)
+        df['row_number'] = df['row_number'].astype(int)
         df = df.sort_values(partitionby)
         df = df[df["row_number"] <= row]
     elif filtrado=='mayor a':
         df["row_number"] = df.groupby(partitionby)[orderby].rank(method = "first", ascending = asc_desc)
+        df['row_number'] = df['row_number'].astype(int)
         df = df.sort_values(partitionby)
         df = df[df["row_number"] >= row]
     return df
@@ -240,7 +245,7 @@ df['Age_Category'] = pd.cut(df['Age'], bins = bins, labels = labels)
 #################### Otros ####################
 
 # Para ocultar indices
-df.head().hide_index()
+df.head().style.hide_index()
 
 # Para cocultar variables
-df.head().hide_columns()
+df.head().style.hide_columns()
